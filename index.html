@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arjun Bharadwaj Raveendran | Software Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06060d;
+      --bg2: #0d0d18;
+      --gold: #f0b429;
+      --gold2: #ffd166;
+      --gold3: rgba(240,180,41,0.08);
+      --white: #f0efe9;
+      --muted: #7a7a8c;
+      --card: #0f0f1c;
+      --border: #1a1a2a;
+      --accent: #7b61ff;
+      --accent2: rgba(123,97,255,0.12);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSOR ─── */
+    .cursor { width: 10px; height: 10px; background: var(--gold); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s, width 0.2s, height 0.2s; mix-blend-mode: difference; }
+    .cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(240,180,41,0.5); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: left 0.12s ease, top 0.12s ease, width 0.3s, height 0.3s; }
+
+    /* ─── NOISE ─── */
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9997; opacity: 0.5; }
+
+    /* ─── PROGRESS ─── */
+    #progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: linear-gradient(90deg, var(--gold), var(--accent)); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+    /* ─── NAV ─── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.4rem 5rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.4s; }
+    nav.scrolled { background: rgba(6,6,13,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 1rem 5rem; }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; color: var(--gold); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; position: relative; padding-bottom: 2px; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--gold); transition: width 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    /* ─── HERO ─── */
+    #hero { min-height: 100vh; display: flex; align-items: center; position: relative; padding: 0 5rem; overflow: hidden; }
+    .hero-canvas { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+    .hero-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(240,180,41,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(240,180,41,0.03) 1px, transparent 1px); background-size: 55px 55px; pointer-events: none; z-index: 1; }
+    .hero-diagonal { position: absolute; top: 0; right: 25%; width: 1px; height: 100%; background: linear-gradient(to bottom, transparent, rgba(240,180,41,0.1), transparent); z-index: 1; }
+    .hero-glow { position: absolute; width: 700px; height: 700px; background: radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 65%); top: -150px; right: -100px; pointer-events: none; z-index: 1; }
+    .hero-glow2 { position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(240,180,41,0.08) 0%, transparent 65%); bottom: 50px; left: -80px; pointer-events: none; z-index: 1; }
+
+    .hero-inner { position: relative; z-index: 2; width: 100%; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; }
+    .hero-left { max-width: 620px; }
+    .hero-right { display: flex; justify-content: flex-end; align-items: center; }
+
+    /* Hero right — floating card illustration */
+    .hero-card-visual { position: relative; width: 340px; animation: float 5s ease-in-out infinite; }
+    .hero-card-visual svg { width: 100%; filter: drop-shadow(0 30px 60px rgba(123,97,255,0.2)); }
+
+    .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.25); color: var(--gold); padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; animation: fadeUp 0.8s ease forwards; opacity: 0; margin-bottom: 1.4rem; display: inline-flex; }
+    .hero-tag-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+    .hero-eyebrow { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; animation: fadeUp 0.8s 0.02s ease forwards; opacity: 0; }
+    .hero-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(3rem, 5vw, 5rem); line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 1rem; animation: fadeUp 0.8s 0.06s ease forwards; opacity: 0; }
+    .hero-name .line2 { color: var(--gold); display: block; }
+
+    /* Hero meta pill row */
+    .hero-meta-row { display: flex; gap: 0; margin-bottom: 1.5rem; animation: fadeUp 0.8s 0.1s ease forwards; opacity: 0; }
+    .hero-meta-pill { padding: 0.5rem 1rem; border: 1px solid var(--border); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
+    .hero-meta-pill:first-child { border-radius: 6px 0 0 6px; }
+    .hero-meta-pill:last-child { border-radius: 0 6px 6px 0; }
+    .hero-meta-pill span { color: var(--white); font-weight: 500; display: block; font-size: 0.78rem; }
+
+    .hero-summary { font-size: 1rem; color: var(--muted); max-width: 520px; line-height: 1.85; margin-bottom: 2.5rem; animation: fadeUp 0.8s 0.14s ease forwards; opacity: 0; }
+    .hero-summary em { color: var(--white); font-style: normal; font-weight: 400; }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.18s ease forwards; opacity: 0; }
+
+    .btn-gold { background: var(--gold); color: #06060d; padding: 0.9rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; letter-spacing: 0.02em; position: relative; overflow: hidden; }
+    .btn-gold::before { content: ''; position: absolute; inset: 0; background: white; opacity: 0; transition: opacity 0.3s; }
+    .btn-gold:hover::before { opacity: 0.1; }
+    .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(240,180,41,0.35); }
+    .btn-outline { background: transparent; color: var(--white); padding: 0.9rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 400; font-size: 0.9rem; border: 1px solid var(--border); transition: all 0.3s; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); }
+
+    .hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.6rem; color: var(--muted); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; animation: bounce 2.5s infinite; }
+    .hero-scroll::after { content: ''; width: 1px; height: 50px; background: linear-gradient(to bottom, rgba(136,136,150,0.6), transparent); }
+
+    /* ─── SECTIONS ─── */
+    section { padding: 8rem 5rem; position: relative; overflow: hidden; }
+    .section-label { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: clamp(2rem, 3.5vw, 2.9rem); letter-spacing: -0.025em; margin-bottom: 1rem; line-height: 1.1; }
+    .section-title span { color: var(--gold); }
+    .section-divider { width: 40px; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); margin-bottom: 4rem; }
+
+    /* ─── ABOUT ─── */
+    #about { background: var(--bg2); }
+    #about::before { content: 'ABOUT'; position: absolute; right: -2rem; top: 50%; transform: translateY(-50%) rotate(90deg); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 9rem; color: rgba(240,180,41,0.025); pointer-events: none; white-space: nowrap; letter-spacing: 0.1em; }
+
+    /* About: text left, illustration right, certs below full-width */
+    .about-top { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 6rem; align-items: center; max-width: 1100px; margin-bottom: 5rem; }
+    .about-illustration svg { width: 100%; max-width: 360px; display: block; margin: 0 auto; }
+    .about-text p { color: var(--muted); line-height: 1.95; font-size: 1.02rem; margin-bottom: 1.5rem; }
+    .about-text p strong { color: var(--white); font-weight: 500; }
+    .citizen-line { display: block; margin-top: 0.5rem; padding: 0.8rem 1.2rem; background: rgba(240,180,41,0.05); border-left: 2px solid var(--gold); border-radius: 0 8px 8px 0; color: var(--white); font-size: 0.9rem; line-height: 1.5; }
+
+    /* Stats row */
+    .about-stats { display: flex; gap: 0; margin-top: 2.5rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+    .stat-box { flex: 1; padding-right: 2rem; border-right: 1px solid var(--border); margin-right: 2rem; }
+    .stat-box:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+    .stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2.4rem; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+
+    /* Certs: horizontal strip */
+    .about-certs-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 1100px; }
+    .about-certs-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; max-width: 1100px; }
+    .cert-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; display: flex; align-items: flex-start; gap: 0.9rem; transition: all 0.3s; }
+    .cert-card:hover { border-color: rgba(240,180,41,0.3); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+    .cert-card:hover .cert-icon { background: var(--gold); color: #06060d; }
+    .cert-icon { width: 34px; height: 34px; border-radius: 8px; background: rgba(240,180,41,0.08); border: 1px solid rgba(240,180,41,0.18); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; transition: all 0.3s; color: var(--gold); }
+    .cert-body { flex: 1; }
+    .cert-name { font-size: 0.82rem; color: var(--muted); line-height: 1.45; transition: color 0.3s; }
+    .cert-card:hover .cert-name { color: var(--white); }
+    .cert-issuer { font-size: 0.68rem; color: rgba(122,122,140,0.5); margin-top: 0.2rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ─── SKILLS ─── */
+    #skills { background: var(--bg); }
+    #skills::before { content: 'SKILLS'; position: absolute; left: -1rem; top: 50%; transform: translateY(-50%) rotate(-90deg); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 9rem; color: rgba(123,97,255,0.025); pointer-events: none; white-space: nowrap; letter-spacing: 0.1em; }
+    .skills-layout { display: grid; grid-template-columns: 1fr 390px; gap: 4rem; align-items: start; max-width: 1100px; }
+    .skills-categories { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .skill-category { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem; transition: all 0.35s; position: relative; overflow: hidden; }
+    .skill-category::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--gold), var(--accent)); transform: scaleX(0); transition: transform 0.35s; transform-origin: left; }
+    .skill-category::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top left, rgba(240,180,41,0.04), transparent 60%); opacity: 0; transition: opacity 0.35s; }
+    .skill-category:hover::before { transform: scaleX(1); }
+    .skill-category:hover::after { opacity: 1; }
+    .skill-category:hover { border-color: rgba(240,180,41,0.25); transform: translateY(-4px); box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+    .skill-category-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; position: relative; z-index: 1; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; position: relative; z-index: 1; }
+    .skill-tag { background: rgba(240,180,41,0.06); border: 1px solid rgba(240,180,41,0.13); color: var(--white); padding: 0.28rem 0.75rem; border-radius: 50px; font-size: 0.78rem; transition: all 0.2s; cursor: default; }
+    .skill-tag:hover { background: rgba(240,180,41,0.14); border-color: rgba(240,180,41,0.5); color: var(--gold); transform: scale(1.05); }
+    .skills-visual { position: sticky; top: 100px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+    .skills-visual svg { width: 100%; display: block; }
+
+    /* ─── PROJECTS ─── */
+    #projects { background: var(--bg2); }
+    /* Projects: alternating layout — card + illustration side by side */
+    .projects-featured { display: flex; flex-direction: column; gap: 3rem; max-width: 1100px; margin-bottom: 3rem; }
+    .proj-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .proj-row.rev { direction: rtl; }
+    .proj-row.rev > * { direction: ltr; }
+    .proj-illus { display: flex; align-items: center; justify-content: center; }
+    .proj-illus svg { width: 100%; max-width: 320px; }
+    .project-card-v2 { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.2rem; transition: all 0.35s; position: relative; overflow: hidden; }
+    .project-card-v2::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(240,180,41,0.04), transparent 55%); opacity: 0; transition: opacity 0.35s; }
+    .project-card-v2:hover::before { opacity: 1; }
+    .project-card-v2:hover { border-color: rgba(240,180,41,0.3); transform: translateY(-5px); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+    .project-number { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 4rem; color: rgba(240,180,41,0.06); position: absolute; top: 0.8rem; right: 1.2rem; line-height: 1; pointer-events: none; }
+    .project-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 0.7rem; color: var(--white); position: relative; z-index: 1; }
+    .project-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.75; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+    .project-tech { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+    .tech-tag { background: rgba(123,97,255,0.1); border: 1px solid rgba(123,97,255,0.18); color: #a598ff; padding: 0.22rem 0.7rem; border-radius: 50px; font-size: 0.76rem; }
+    .project-meta { color: rgba(122,122,140,0.6); font-size: 0.82rem; position: relative; z-index: 1; }
+
+    /* ─── EXPERIENCE ─── */
+    #experience { background: var(--bg); }
+    #experience::before { content: 'WORK'; position: absolute; right: -1rem; bottom: 10%; transform: rotate(90deg); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 9rem; color: rgba(240,180,41,0.025); pointer-events: none; white-space: nowrap; letter-spacing: 0.1em; }
+
+    /* Experience: timeline left with illustration column on the right */
+    .experience-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 6rem; align-items: start; max-width: 1100px; }
+    .experience-list { display: flex; flex-direction: column; }
+    .exp-sticky-illus { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 2.5rem; align-items: center; }
+    .exp-illus-block svg { width: 100%; max-width: 300px; }
+    .exp-illus-caption { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-align: center; margin-top: 0.6rem; }
+
+    .exp-item { display: grid; grid-template-columns: 1px 1fr; gap: 0 2.5rem; }
+    .exp-line { background: var(--border); position: relative; }
+    .exp-line::before { content: ''; width: 11px; height: 11px; background: var(--gold); border-radius: 50%; position: absolute; top: 6px; left: -5px; box-shadow: 0 0 12px rgba(240,180,41,0.5); }
+    .exp-content { padding-bottom: 3.5rem; }
+    .exp-date { font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem; }
+    .exp-role { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.2rem; }
+    .exp-company { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.1rem; }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .exp-bullets li { color: var(--muted); font-size: 0.88rem; line-height: 1.65; padding-left: 1.2rem; position: relative; transition: color 0.2s; }
+    .exp-bullets li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 0.78rem; top: 1px; }
+    .exp-bullets li:hover { color: var(--white); }
+
+    /* ─── CONTACT ─── */
+    #contact { background: var(--bg2); text-align: center; }
+    #contact::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(123,97,255,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(240,180,41,0.06) 0%, transparent 60%); pointer-events: none; }
+    .contact-inner { max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
+    .contact-inner .section-title { margin-bottom: 0.8rem; }
+    .contact-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.85; margin-bottom: 3rem; font-style: italic; }
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2rem 5rem; display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 0.82rem; }
+    footer a { color: var(--gold); text-decoration: none; transition: opacity 0.2s; }
+    footer a:hover { opacity: 0.7; }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(240,180,41,0.4); } 50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(240,180,41,0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    @keyframes dash { to { stroke-dashoffset: 0; } }
+
+    /* ─── REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(35px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-left { opacity: 0; transform: translateX(-35px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+    .reveal-left.visible { opacity: 1; transform: none; }
+    .reveal-right { opacity: 0; transform: translateX(35px); transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1); }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1100px) { .skills-layout { grid-template-columns: 1fr; } .skills-visual { position: static; } .experience-wrap { grid-template-columns: 1fr; } .exp-sticky-illus { display: none; } }
+    @media (max-width: 960px) {
+      nav, nav.scrolled { padding: 1.2rem 2.5rem; }
+      section { padding: 6rem 2.5rem; }
+      #hero { padding: 0 2.5rem; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .about-top { grid-template-columns: 1fr; gap: 3rem; }
+      .about-certs-strip { grid-template-columns: 1fr 1fr; }
+      .proj-row, .proj-row.rev { grid-template-columns: 1fr; direction: ltr; }
+      .proj-illus { display: none; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+    @media (max-width: 600px) { .hero-name { font-size: 2.6rem; } .nav-links { display: none; } .skills-categories { grid-template-columns: 1fr; } .about-certs-strip { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div id="progress-bar"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-logo"></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero">
+    <canvas class="hero-canvas" id="particleCanvas"></canvas>
+    <div class="hero-bg-grid"></div>
+    <div class="hero-diagonal"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-tag"><span class="hero-tag-dot"></span>Available for Full-Time Roles</div>
+        <p class="hero-eyebrow">Portfolio · 2026</p>
+        <h1 class="hero-name">
+          Arjun Bharadwaj
+          <span class="line2">Raveendran</span>
+        </h1>
+        <div class="hero-meta-row">
+          <div class="hero-meta-pill"><span>Canadian Citizen</span>Work Auth</div>
+          <div class="hero-meta-pill"><span>B.Computing · Guelph</span>Education</div>
+          <div class="hero-meta-pill"><span>GTA · Open to Relocate</span>Location</div>
+        </div>
+        <p class="hero-summary">
+          Production ML experience and <em>AWS cloud expertise</em>, delivered
+          with a genuine bias for action — from shipping code to solving real problems at scale.
+        </p>
+        <div class="hero-buttons">
+          <a href="#projects" class="btn-gold">View My Work</a>
+          <a href="#contact" class="btn-outline">Get In Touch</a>
+        </div>
+      </div>
+
+      <!-- Hero illustration: code dashboard card -->
+      <div class="hero-right">
+        <div class="hero-card-visual">
+          <svg viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hcard-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#131320"/>
+                <stop offset="100%" stop-color="#0a0a14"/>
+              </linearGradient>
+              <filter id="hglow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <!-- Card body -->
+            <rect width="340" height="420" rx="18" fill="url(#hcard-bg)" stroke="#1a1a2a" stroke-width="1"/>
+            <!-- Top bar -->
+            <rect width="340" height="44" rx="18" fill="#111121"/>
+            <rect y="30" width="340" height="14" fill="#111121"/>
+            <circle cx="22" cy="22" r="6" fill="#ff5f57"/>
+            <circle cx="42" cy="22" r="6" fill="#ffbd2e"/>
+            <circle cx="62" cy="22" r="6" fill="#28c840"/>
+            <text x="100" y="27" fill="#3a3a50" font-size="10" font-family="monospace">arjun.portfolio.dev</text>
+            <!-- Line numbers + code -->
+            <text x="18" y="72" fill="#2a2a40" font-size="10" font-family="monospace">01</text>
+            <text x="18" y="92" fill="#2a2a40" font-size="10" font-family="monospace">02</text>
+            <text x="18" y="112" fill="#2a2a40" font-size="10" font-family="monospace">03</text>
+            <text x="18" y="132" fill="#2a2a40" font-size="10" font-family="monospace">04</text>
+            <text x="18" y="152" fill="#2a2a40" font-size="10" font-family="monospace">05</text>
+            <text x="18" y="172" fill="#2a2a40" font-size="10" font-family="monospace">06</text>
+            <text x="18" y="192" fill="#2a2a40" font-size="10" font-family="monospace">07</text>
+            <text x="18" y="212" fill="#2a2a40" font-size="10" font-family="monospace">08</text>
+            <text x="18" y="232" fill="#2a2a40" font-size="10" font-family="monospace">09</text>
+            <text x="18" y="252" fill="#2a2a40" font-size="10" font-family="monospace">10</text>
+
+            <text x="44" y="72" fill="#7b61ff" font-size="10" font-family="monospace">const</text>
+            <text x="86" y="72" fill="#f0efe9" font-size="10" font-family="monospace">developer</text>
+            <text x="144" y="72" fill="#7a7a8c" font-size="10" font-family="monospace">=</text>
+            <text x="154" y="72" fill="#f0b429" font-size="10" font-family="monospace">{</text>
+
+            <text x="56" y="92" fill="#f0efe9" font-size="10" font-family="monospace">name:</text>
+            <text x="96" y="92" fill="#a598ff" font-size="10" font-family="monospace">'Arjun B.R.'</text>
+            <text x="160" y="92" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="56" y="112" fill="#f0efe9" font-size="10" font-family="monospace">role:</text>
+            <text x="88" y="112" fill="#a598ff" font-size="10" font-family="monospace">'SWE / ML'</text>
+            <text x="148" y="112" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="56" y="132" fill="#f0efe9" font-size="10" font-family="monospace">cloud:</text>
+            <text x="96" y="132" fill="#a598ff" font-size="10" font-family="monospace">'AWS'</text>
+            <text x="124" y="132" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="56" y="152" fill="#f0efe9" font-size="10" font-family="monospace">auth:</text>
+            <text x="88" y="152" fill="#a598ff" font-size="10" font-family="monospace">'🍁 CA'</text>
+            <text x="116" y="152" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="56" y="172" fill="#f0efe9" font-size="10" font-family="monospace">skills:</text>
+            <text x="100" y="172" fill="#f0b429" font-size="10" font-family="monospace">[</text>
+
+            <text x="70" y="192" fill="#a598ff" font-size="10" font-family="monospace">'Python'</text>
+            <text x="118" y="192" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+            <text x="124" y="192" fill="#a598ff" font-size="10" font-family="monospace">'React'</text>
+            <text x="166" y="192" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="70" y="212" fill="#a598ff" font-size="10" font-family="monospace">'SQL'</text>
+            <text x="100" y="212" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+            <text x="106" y="212" fill="#a598ff" font-size="10" font-family="monospace">'Docker'</text>
+            <text x="158" y="212" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="56" y="232" fill="#f0b429" font-size="10" font-family="monospace">]</text>
+            <text x="63" y="232" fill="#7a7a8c" font-size="10" font-family="monospace">,</text>
+
+            <text x="44" y="252" fill="#f0b429" font-size="10" font-family="monospace">}</text>
+
+            <!-- Divider -->
+            <line x1="18" y1="270" x2="322" y2="270" stroke="#1a1a2a" stroke-width="1"/>
+
+            <!-- Bottom mini-metrics -->
+            <text x="18" y="296" fill="#7a7a8c" font-size="9" font-family="monospace">STATUS</text>
+            <rect x="18" y="304" width="90" height="20" rx="4" fill="rgba(40,200,64,0.1)" stroke="rgba(40,200,64,0.3)" stroke-width="1"/>
+            <circle cx="28" cy="314" r="3" fill="#28c840"/>
+            <text x="35" y="318" fill="#28c840" font-size="8" font-family="monospace">Hiring Ready</text>
+
+            <text x="126" y="296" fill="#7a7a8c" font-size="9" font-family="monospace">CERTS</text>
+            <rect x="126" y="304" width="68" height="20" rx="4" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.25)" stroke-width="1"/>
+            <text x="136" y="318" fill="#f0b429" font-size="8" font-family="monospace">4x AWS ✓</text>
+
+            <!-- Bar chart at bottom -->
+            <text x="18" y="348" fill="#7a7a8c" font-size="9" font-family="monospace">ACTIVITY</text>
+            <rect x="18" y="358" width="12" height="30" rx="2" fill="rgba(240,180,41,0.5)"/>
+            <rect x="34" y="368" width="12" height="20" rx="2" fill="rgba(240,180,41,0.3)"/>
+            <rect x="50" y="353" width="12" height="35" rx="2" fill="rgba(240,180,41,0.6)"/>
+            <rect x="66" y="362" width="12" height="26" rx="2" fill="rgba(240,180,41,0.4)"/>
+            <rect x="82" y="350" width="12" height="38" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="98" y="355" width="12" height="33" rx="2" fill="rgba(240,180,41,0.5)"/>
+            <rect x="114" y="346" width="12" height="42" rx="2" fill="rgba(240,180,41,0.8)"/>
+            <rect x="130" y="360" width="12" height="28" rx="2" fill="rgba(123,97,255,0.5)"/>
+            <rect x="146" y="348" width="12" height="40" rx="2" fill="rgba(123,97,255,0.7)"/>
+            <rect x="162" y="354" width="12" height="34" rx="2" fill="rgba(123,97,255,0.6)"/>
+
+            <!-- Cursor blink -->
+            <rect x="44" y="255" width="7" height="12" rx="1" fill="#f0b429" opacity="0.85">
+              <animate attributeName="opacity" values="0.85;0;0.85" dur="1.1s" repeatCount="indefinite"/>
+            </rect>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">Scroll</div>
+  </section>
+
+  <!-- ══ ABOUT ══ -->
+  <section id="about">
+    <div class="about-top">
+      <div class="about-text reveal-left">
+        <p class="section-label">About Me</p>
+        <h2 class="section-title">Turning ideas into <span>working software</span></h2>
+        <div class="section-divider"></div>
+        <p>
+          I'm a <strong>Computer Science graduate from the University of Guelph</strong> with a passion for
+          software engineering, machine learning, and cloud infrastructure. I love building
+          full-stack applications that solve real problems for real people.
+        </p>
+        <p>
+          From developing <strong>ML pipelines</strong> and deploying on <strong>AWS</strong>,
+          to shipping hackathon MVPs and mobile apps — I bring both technical depth and a genuine bias for action.
+        </p>
+        <p>
+          <span class="citizen-line">🍁 Canadian Citizen — fully authorized to work in Canada without sponsorship.</span>
+        </p>
+
+      </div>
+
+      <!-- About illustration: developer at work -->
+      <div class="about-illustration reveal-right">
+        <svg viewBox="0 0 360 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="about-glow" cx="50%" cy="60%" r="55%">
+              <stop offset="0%" stop-color="#7b61ff" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="180" cy="310" rx="150" ry="18" fill="rgba(123,97,255,0.06)"/>
+          <rect cx="180" cy="160" fill="url(#about-glow)" width="360" height="340"/>
+          <!-- Monitor -->
+          <rect x="60" y="60" width="240" height="160" rx="12" fill="#111121" stroke="#1a1a2a" stroke-width="1.5"/>
+          <rect x="68" y="68" width="224" height="145" rx="8" fill="#0a0a14"/>
+          <!-- Screen content -->
+          <rect x="80" y="78" width="80" height="6" rx="3" fill="#7b61ff" opacity="0.6"/>
+          <rect x="80" y="92" width="120" height="4" rx="2" fill="#1a1a2a"/>
+          <rect x="80" y="102" width="100" height="4" rx="2" fill="#1a1a2a"/>
+          <rect x="80" y="118" width="60" height="4" rx="2" fill="#f0b429" opacity="0.5"/>
+          <rect x="80" y="128" width="140" height="4" rx="2" fill="#1a1a2a"/>
+          <rect x="80" y="138" width="110" height="4" rx="2" fill="#1a1a2a"/>
+          <rect x="80" y="154" width="40" height="4" rx="2" fill="#a598ff" opacity="0.5"/>
+          <rect x="126" y="154" width="60" height="4" rx="2" fill="#1a1a2a"/>
+          <!-- Floating badge top right of screen -->
+          <rect x="196" y="82" width="78" height="50" rx="6" fill="#131320" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+          <text x="235" y="100" text-anchor="middle" fill="#f0b429" font-size="14" font-family="monospace">⚡</text>
+          <text x="235" y="120" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">AWS Active</text>
+          <!-- Stand -->
+          <rect x="165" y="220" width="30" height="20" rx="2" fill="#111121"/>
+          <rect x="140" y="238" width="80" height="8" rx="4" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+          <!-- Keyboard -->
+          <rect x="100" y="260" width="160" height="28" rx="6" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+          <rect x="110" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="122" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="134" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="146" y="266" width="8" height="6" rx="1" fill="#f0b429" opacity="0.3"/>
+          <rect x="158" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="170" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="182" y="266" width="8" height="6" rx="1" fill="#1a1a2a"/>
+          <rect x="194" y="266" width="16" height="6" rx="1" fill="#7b61ff" opacity="0.3"/>
+          <rect x="110" y="276" width="140" height="6" rx="1" fill="#1a1a2a"/>
+          <!-- Floating pill: Python -->
+          <rect x="18" y="120" width="62" height="22" rx="11" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.25)" stroke-width="1"/>
+          <text x="49" y="135" text-anchor="middle" fill="#f0b429" font-size="9" font-family="monospace">Python</text>
+          <!-- Floating pill: React -->
+          <rect x="280" y="150" width="58" height="22" rx="11" fill="rgba(123,97,255,0.1)" stroke="rgba(123,97,255,0.3)" stroke-width="1"/>
+          <text x="309" y="165" text-anchor="middle" fill="#a598ff" font-size="9" font-family="monospace">React</text>
+          <!-- Floating pill: ML -->
+          <rect x="14" y="200" width="52" height="22" rx="11" fill="rgba(123,97,255,0.1)" stroke="rgba(123,97,255,0.3)" stroke-width="1"/>
+          <text x="40" y="215" text-anchor="middle" fill="#a598ff" font-size="9" font-family="monospace">ML/AI</text>
+          <!-- Floating pill: AWS -->
+          <rect x="292" y="90" width="46" height="22" rx="11" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.25)" stroke-width="1"/>
+          <text x="315" y="105" text-anchor="middle" fill="#f0b429" font-size="9" font-family="monospace">AWS</text>
+          <!-- Glow under screen -->
+          <ellipse cx="180" cy="220" rx="90" ry="8" fill="rgba(123,97,255,0.08)"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Certs horizontal strip -->
+    <p class="about-certs-label reveal">Certifications</p>
+    <div class="about-certs-strip">
+      <div class="cert-card reveal">
+        <div class="cert-icon">☁</div>
+        <div class="cert-body">
+          <div class="cert-name">Building Generative AI Applications (Amazon Bedrock)</div>
+          <div class="cert-issuer">Amazon Web Services</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">✦</div>
+        <div class="cert-body">
+          <div class="cert-name">Foundations of Prompt Engineering</div>
+          <div class="cert-issuer">Amazon Web Services</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">◈</div>
+        <div class="cert-body">
+          <div class="cert-name">Planning a Generative AI Project</div>
+          <div class="cert-issuer">Amazon Web Services</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">⬡</div>
+        <div class="cert-body">
+          <div class="cert-name">Amazon Q Developer</div>
+          <div class="cert-issuer">Amazon Web Services</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">↗</div>
+        <div class="cert-body">
+          <div class="cert-name">Advanced Google Analytics</div>
+          <div class="cert-issuer">Google</div>
+        </div>
+      </div>
+      <div class="cert-card reveal">
+        <div class="cert-icon">⛨</div>
+        <div class="cert-body">
+          <div class="cert-name">Introduction to Cyber Security</div>
+          <div class="cert-issuer">Cisco</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SKILLS ══ -->
+  <section id="skills">
+    <p class="section-label reveal">Technical Skills</p>
+    <h2 class="section-title reveal">What I <span>work with</span></h2>
+    <div class="section-divider reveal"></div>
+    <div class="skills-layout">
+      <div class="skills-categories">
+        <div class="skill-category reveal">
+          <div class="skill-category-title">Languages</div>
+          <div class="skill-tags"><span class="skill-tag">Python</span><span class="skill-tag">Java</span><span class="skill-tag">JavaScript</span><span class="skill-tag">C / C++</span><span class="skill-tag">SQL</span><span class="skill-tag">HTML / CSS</span></div>
+        </div>
+        <div class="skill-category reveal">
+          <div class="skill-category-title">Frameworks</div>
+          <div class="skill-tags"><span class="skill-tag">React.js</span><span class="skill-tag">Node.js</span><span class="skill-tag">FlutterFlow</span><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Firestore</span></div>
+        </div>
+        <div class="skill-category reveal">
+          <div class="skill-category-title">ML / AI</div>
+          <div class="skill-tags"><span class="skill-tag">Clustering</span><span class="skill-tag">Regression</span><span class="skill-tag">Time-Series</span><span class="skill-tag">Anomaly Detection</span><span class="skill-tag">Deep Learning</span><span class="skill-tag">Generative AI</span></div>
+        </div>
+        <div class="skill-category reveal">
+          <div class="skill-category-title">Cloud & DevOps</div>
+          <div class="skill-tags"><span class="skill-tag">AWS EC2</span><span class="skill-tag">AWS Lambda</span><span class="skill-tag">AWS RDS</span><span class="skill-tag">Docker</span><span class="skill-tag">RESTful APIs</span><span class="skill-tag">Git</span><span class="skill-tag">Jira</span><span class="skill-tag">Postman</span></div>
+        </div>
+      </div>
+
+      <div class="skills-visual reveal-right">
+        <svg viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bg-g" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#06060d"/></radialGradient>
+            <radialGradient id="orb-g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f0b429" stop-opacity="0.35"/><stop offset="100%" stop-color="#f0b429" stop-opacity="0"/></radialGradient>
+            <radialGradient id="orb-p" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7b61ff" stop-opacity="0.25"/><stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/></radialGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <rect width="400" height="520" fill="url(#bg-g)"/>
+          <g stroke="#f0b429" stroke-opacity="0.04" stroke-width="0.5">
+            <line x1="0" y1="65" x2="400" y2="65"/><line x1="0" y1="130" x2="400" y2="130"/><line x1="0" y1="195" x2="400" y2="195"/><line x1="0" y1="260" x2="400" y2="260"/><line x1="0" y1="325" x2="400" y2="325"/><line x1="0" y1="390" x2="400" y2="390"/><line x1="0" y1="455" x2="400" y2="455"/>
+            <line x1="65" y1="0" x2="65" y2="520"/><line x1="130" y1="0" x2="130" y2="520"/><line x1="195" y1="0" x2="195" y2="520"/><line x1="260" y1="0" x2="260" y2="520"/><line x1="325" y1="0" x2="325" y2="520"/>
+          </g>
+          <ellipse cx="100" cy="160" rx="110" ry="110" fill="url(#orb-p)" opacity="0.8"/>
+          <ellipse cx="300" cy="360" rx="100" ry="100" fill="url(#orb-g)" opacity="0.9"/>
+          <circle cx="200" cy="265" r="150" fill="none" stroke="#f0b429" stroke-width="0.5" stroke-opacity="0.18" stroke-dasharray="5 10"/>
+          <circle cx="200" cy="265" r="100" fill="none" stroke="#7b61ff" stroke-width="0.5" stroke-opacity="0.22" stroke-dasharray="4 8"/>
+          <circle cx="200" cy="265" r="55" fill="none" stroke="#f0b429" stroke-width="0.8" stroke-opacity="0.3"/>
+          <circle cx="200" cy="265" r="150" fill="none" stroke="#f0b429" stroke-width="1.2" stroke-dasharray="55 885" stroke-linecap="round" stroke-opacity="0.6" style="transform-origin:200px 265px;animation:spin 14s linear infinite"/>
+          <circle cx="200" cy="265" r="100" fill="none" stroke="#7b61ff" stroke-width="1" stroke-dasharray="38 590" stroke-linecap="round" stroke-opacity="0.5" style="transform-origin:200px 265px;animation:spin 9s linear infinite reverse"/>
+          <circle cx="200" cy="265" r="26" fill="#0f0f1c" stroke="#f0b429" stroke-width="1.5" filter="url(#glow)"/>
+          <text x="200" y="262" text-anchor="middle" fill="#f0b429" font-size="9" font-family="monospace" font-weight="bold">&lt;/&gt;</text>
+          <text x="200" y="275" text-anchor="middle" fill="#888896" font-size="6" font-family="monospace">ARJUN</text>
+          <circle cx="255" cy="265" r="6" fill="#f0b429" filter="url(#glow)"/>
+          <text x="264" y="269" fill="#f0efe9" font-size="8" font-family="monospace">Python</text>
+          <circle cx="172" cy="212" r="6" fill="#f0b429" filter="url(#glow)"/>
+          <text x="142" y="209" fill="#f0efe9" font-size="8" font-family="monospace">C/C++</text>
+          <circle cx="172" cy="318" r="6" fill="#f0b429" filter="url(#glow)"/>
+          <text x="140" y="322" fill="#f0efe9" font-size="8" font-family="monospace">Java</text>
+          <circle cx="228" cy="212" r="5" fill="#f0b429" filter="url(#glow)" opacity="0.8"/>
+          <text x="236" y="209" fill="#888896" font-size="7" font-family="monospace">SQL</text>
+          <circle cx="228" cy="318" r="5" fill="#f0b429" filter="url(#glow)" opacity="0.8"/>
+          <text x="236" y="322" fill="#888896" font-size="7" font-family="monospace">JS</text>
+          <circle cx="300" cy="265" r="7" fill="#7b61ff" filter="url(#glow)"/>
+          <text x="311" y="269" fill="#a598ff" font-size="8" font-family="monospace">React</text>
+          <circle cx="150" cy="178" r="7" fill="#7b61ff" filter="url(#glow)"/>
+          <text x="116" y="175" fill="#a598ff" font-size="8" font-family="monospace">Node.js</text>
+          <circle cx="150" cy="352" r="7" fill="#7b61ff" filter="url(#glow)"/>
+          <text x="112" y="356" fill="#a598ff" font-size="8" font-family="monospace">Docker</text>
+          <circle cx="257" cy="172" r="6" fill="#7b61ff" filter="url(#glow)" opacity="0.85"/>
+          <text x="263" y="168" fill="#888896" font-size="7" font-family="monospace">AWS</text>
+          <circle cx="257" cy="358" r="6" fill="#7b61ff" filter="url(#glow)" opacity="0.85"/>
+          <text x="263" y="362" fill="#888896" font-size="7" font-family="monospace">Git</text>
+          <circle cx="350" cy="265" r="5" fill="#f0efe9" stroke="#f0b429" stroke-width="1" opacity="0.55"/>
+          <text x="358" y="262" fill="#888896" font-size="7" font-family="monospace">ML/AI</text>
+          <circle cx="110" cy="120" r="5" fill="#f0efe9" stroke="#7b61ff" stroke-width="1" opacity="0.55"/>
+          <text x="60" y="117" fill="#888896" font-size="7" font-family="monospace">Deep Learning</text>
+          <circle cx="110" cy="410" r="5" fill="#f0efe9" stroke="#7b61ff" stroke-width="1" opacity="0.55"/>
+          <text x="62" y="414" fill="#888896" font-size="7" font-family="monospace">Gen AI</text>
+          <circle cx="290" cy="120" r="5" fill="#f0efe9" stroke="#f0b429" stroke-width="1" opacity="0.55"/>
+          <text x="297" y="117" fill="#888896" font-size="7" font-family="monospace">Firestore</text>
+          <circle cx="290" cy="410" r="5" fill="#f0efe9" stroke="#f0b429" stroke-width="1" opacity="0.55"/>
+          <text x="297" y="414" fill="#888896" font-size="7" font-family="monospace">REST</text>
+          <g stroke="#f0b429" stroke-width="0.5" stroke-opacity="0.2">
+            <line x1="226" y1="265" x2="249" y2="265"/><line x1="187" y1="250" x2="177" y2="219"/><line x1="187" y1="280" x2="177" y2="311"/><line x1="215" y1="249" x2="225" y2="217"/><line x1="215" y1="281" x2="225" y2="313"/>
+          </g>
+          <text x="200" y="48" text-anchor="middle" fill="#f0b429" font-size="10" font-family="'Syne',sans-serif" font-weight="700" letter-spacing="4" opacity="0.65">TECH STACK</text>
+          <line x1="110" y1="54" x2="168" y2="54" stroke="#f0b429" stroke-width="0.5" opacity="0.25"/>
+          <line x1="232" y1="54" x2="290" y2="54" stroke="#f0b429" stroke-width="0.5" opacity="0.25"/>
+          <text x="200" y="498" text-anchor="middle" fill="#888896" font-size="7.5" font-family="monospace" opacity="0.5">arjun.bharadwaj.dev</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROJECTS ══ -->
+  <section id="projects">
+    <p class="section-label reveal">Projects</p>
+    <h2 class="section-title reveal">Things I've <span>built</span></h2>
+    <div class="section-divider reveal"></div>
+
+    <div class="projects-featured">
+
+      <!-- Project 1: card left, illustration right -->
+      <div class="proj-row reveal">
+        <div class="project-card-v2">
+          <div class="project-number">01</div>
+          <h3 class="project-title">DeveloperWeek 2025 Hackathon</h3>
+          <p class="project-desc">Full-stack reselling marketplace built with a 3-person team. Includes user profiles, product listings, transaction management, third-party payment processing, and authentication — all shipped in 48 hours.</p>
+          <div class="project-tech"><span class="tech-tag">React</span><span class="tech-tag">Node.js</span><span class="tech-tag">SQL</span><span class="tech-tag">REST APIs</span></div>
+          <span class="project-meta">Feb 2025 · Hackathon</span>
+        </div>
+        <div class="proj-illus reveal-right">
+          <!-- Marketplace SVG -->
+          <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="p1g" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#7b61ff" stop-opacity="0.1"/><stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/></radialGradient></defs>
+            <rect width="300" height="260" fill="url(#p1g)"/>
+            <!-- Browser window -->
+            <rect x="20" y="20" width="260" height="200" rx="10" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+            <rect x="20" y="20" width="260" height="32" rx="10" fill="#0f0f1c"/>
+            <rect y="38" x="20" width="260" height="14" fill="#0f0f1c"/>
+            <circle cx="36" cy="36" r="5" fill="#ff5f57"/><circle cx="52" cy="36" r="5" fill="#ffbd2e"/><circle cx="68" cy="36" r="5" fill="#28c840"/>
+            <!-- URL bar -->
+            <rect x="84" y="28" width="140" height="16" rx="4" fill="#1a1a2a"/>
+            <text x="154" y="40" text-anchor="middle" fill="#3a3a50" font-size="8" font-family="monospace">marketplace.dev</text>
+            <!-- Product cards inside browser -->
+            <rect x="32" y="60" width="70" height="80" rx="6" fill="#0a0a14" stroke="#1a1a2a" stroke-width="1"/>
+            <rect x="36" y="64" width="62" height="44" rx="4" fill="#131320"/>
+            <text x="67" y="91" text-anchor="middle" fill="#f0b429" font-size="18">👟</text>
+            <rect x="36" y="112" width="40" height="4" rx="2" fill="#1a1a2a"/>
+            <rect x="36" y="120" width="24" height="4" rx="2" fill="#f0b429" opacity="0.5"/>
+            <rect x="36" y="130" width="50" height="10" rx="4" fill="#7b61ff" opacity="0.5"/>
+            <text x="61" y="139" text-anchor="middle" fill="#a598ff" font-size="7">Buy Now</text>
+
+            <rect x="114" y="60" width="70" height="80" rx="6" fill="#0a0a14" stroke="#1a1a2a" stroke-width="1"/>
+            <rect x="118" y="64" width="62" height="44" rx="4" fill="#131320"/>
+            <text x="149" y="91" text-anchor="middle" fill="#f0b429" font-size="18">💻</text>
+            <rect x="118" y="112" width="44" height="4" rx="2" fill="#1a1a2a"/>
+            <rect x="118" y="120" width="30" height="4" rx="2" fill="#f0b429" opacity="0.5"/>
+            <rect x="118" y="130" width="50" height="10" rx="4" fill="#7b61ff" opacity="0.5"/>
+            <text x="143" y="139" text-anchor="middle" fill="#a598ff" font-size="7">Buy Now</text>
+
+            <rect x="196" y="60" width="70" height="80" rx="6" fill="#0a0a14" stroke="#1a1a2a" stroke-width="1"/>
+            <rect x="200" y="64" width="62" height="44" rx="4" fill="#131320"/>
+            <text x="231" y="91" text-anchor="middle" fill="#f0b429" font-size="18">🎧</text>
+            <rect x="200" y="112" width="38" height="4" rx="2" fill="#1a1a2a"/>
+            <rect x="200" y="120" width="22" height="4" rx="2" fill="#f0b429" opacity="0.5"/>
+            <rect x="200" y="130" width="50" height="10" rx="4" fill="#7b61ff" opacity="0.5"/>
+            <text x="225" y="139" text-anchor="middle" fill="#a598ff" font-size="7">Buy Now</text>
+
+            <!-- Bottom bar -->
+            <rect x="32" y="152" width="236" height="30" rx="4" fill="#0a0a14"/>
+            <text x="40" y="171" fill="#7a7a8c" font-size="9" font-family="monospace">React</text>
+            <text x="80" y="171" fill="#3a3a50" font-size="9" font-family="monospace">·</text>
+            <text x="88" y="171" fill="#7a7a8c" font-size="9" font-family="monospace">Node.js</text>
+            <text x="138" y="171" fill="#3a3a50" font-size="9" font-family="monospace">·</text>
+            <text x="146" y="171" fill="#7a7a8c" font-size="9" font-family="monospace">SQL</text>
+            <text x="172" y="171" fill="#3a3a50" font-size="9" font-family="monospace">·</text>
+            <text x="180" y="171" fill="#f0b429" font-size="9" font-family="monospace">Hackathon 🏅</text>
+            <!-- Floating tag -->
+            <rect x="80" y="226" width="140" height="22" rx="11" fill="rgba(123,97,255,0.1)" stroke="rgba(123,97,255,0.25)" stroke-width="1"/>
+            <text x="150" y="241" text-anchor="middle" fill="#a598ff" font-size="9" font-family="monospace">DeveloperWeek 2025</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Project 2: illustration left, card right -->
+      <div class="proj-row rev reveal">
+        <div class="project-card-v2">
+          <div class="project-number">02</div>
+          <h3 class="project-title">TiffinBox App</h3>
+          <p class="project-desc">Mobile/web platform connecting students with local tiffin service providers. Features UI built in FlutterFlow, Firestore backend, and a revenue model through featured company placements.</p>
+          <div class="project-tech"><span class="tech-tag">FlutterFlow</span><span class="tech-tag">Firestore</span><span class="tech-tag">Firebase</span></div>
+          <span class="project-meta">Mobile · Web Platform</span>
+        </div>
+        <div class="proj-illus reveal-left">
+          <!-- Mobile app SVG -->
+          <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="p2g" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#f0b429" stop-opacity="0.08"/><stop offset="100%" stop-color="#f0b429" stop-opacity="0"/></radialGradient></defs>
+            <rect width="300" height="260" fill="url(#p2g)"/>
+            <!-- Phone frame -->
+            <rect x="95" y="10" width="110" height="200" rx="16" fill="#111121" stroke="#1a1a2a" stroke-width="1.5"/>
+            <rect x="100" y="24" width="100" height="178" rx="10" fill="#0a0a14"/>
+            <!-- Notch -->
+            <rect x="125" y="14" width="50" height="8" rx="4" fill="#0a0a14"/>
+            <!-- App header -->
+            <rect x="100" y="24" width="100" height="28" rx="0" fill="#131320"/>
+            <rect x="100" y="44" width="100" height="8" fill="#131320"/>
+            <text x="150" y="42" text-anchor="middle" fill="#f0b429" font-size="10" font-weight="bold" font-family="monospace">TiffinBox</text>
+            <!-- Food cards -->
+            <rect x="106" y="58" width="88" height="48" rx="6" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+            <text x="128" y="85" fill="#f0b429" font-size="20">🍛</text>
+            <text x="152" y="78" fill="#f0efe9" font-size="8" font-family="monospace">Meal Plan</text>
+            <text x="152" y="90" fill="#7a7a8c" font-size="7" font-family="monospace">$8/day</text>
+            <rect x="106" y="112" width="88" height="48" rx="6" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+            <text x="128" y="139" fill="#f0b429" font-size="20">🥗</text>
+            <text x="152" y="132" fill="#f0efe9" font-size="8" font-family="monospace">Salad Box</text>
+            <text x="152" y="144" fill="#7a7a8c" font-size="7" font-family="monospace">$6/day</text>
+            <!-- Bottom nav -->
+            <rect x="100" y="168" width="100" height="34" rx="0" fill="#0f0f1c"/>
+            <rect x="100" y="190" width="100" height="12" rx="0" fill="#0f0f1c"/>
+            <text x="120" y="185" text-anchor="middle" fill="#f0b429" font-size="14">🏠</text>
+            <text x="150" y="185" text-anchor="middle" fill="#7a7a8c" font-size="14">🔍</text>
+            <text x="180" y="185" text-anchor="middle" fill="#7a7a8c" font-size="14">👤</text>
+            <!-- Floating labels -->
+            <rect x="12" y="100" width="72" height="20" rx="10" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="48" y="114" text-anchor="middle" fill="#f0b429" font-size="8" font-family="monospace">Firestore DB</text>
+            <rect x="216" y="130" width="74" height="20" rx="10" fill="rgba(123,97,255,0.1)" stroke="rgba(123,97,255,0.25)" stroke-width="1"/>
+            <text x="253" y="144" text-anchor="middle" fill="#a598ff" font-size="8" font-family="monospace">FlutterFlow</text>
+            <!-- Firebase badge -->
+            <rect x="12" y="150" width="68" height="20" rx="10" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="46" y="164" text-anchor="middle" fill="#f0b429" font-size="8" font-family="monospace">Firebase 🔥</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Project 3: card left, illustration right -->
+      <div class="proj-row reveal">
+        <div class="project-card-v2">
+          <div class="project-number">03</div>
+          <h3 class="project-title">Pet Nutrient Tracking App</h3>
+          <p class="project-desc">Figma prototype for pet diet management and vet appointment scheduling. Comprehensive UI/UX design with 90+ test cases following MoSCoW prioritization framework.</p>
+          <div class="project-tech"><span class="tech-tag">Figma</span><span class="tech-tag">UI/UX</span><span class="tech-tag">MoSCoW</span></div>
+          <span class="project-meta">Design · Prototype</span>
+        </div>
+        <div class="proj-illus reveal-right">
+          <!-- Design/Figma SVG -->
+          <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="p3g" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#7b61ff" stop-opacity="0.08"/><stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/></radialGradient></defs>
+            <rect width="300" height="260" fill="url(#p3g)"/>
+            <!-- Figma-like canvas -->
+            <rect x="20" y="20" width="260" height="200" rx="10" fill="#111121" stroke="#1a1a2a" stroke-width="1"/>
+            <!-- Left panel -->
+            <rect x="20" y="20" width="50" height="200" rx="10" fill="#0f0f1c"/>
+            <rect x="58" y="20" width="12" height="200" fill="#0f0f1c"/>
+            <text x="45" y="55" text-anchor="middle" fill="#7a7a8c" font-size="12">🐾</text>
+            <rect x="28" y="70" width="34" height="4" rx="2" fill="#1a1a2a"/>
+            <rect x="28" y="78" width="28" height="4" rx="2" fill="#1a1a2a"/>
+            <rect x="28" y="86" width="34" height="4" rx="2" fill="#f0b429" opacity="0.4"/>
+            <rect x="28" y="94" width="22" height="4" rx="2" fill="#1a1a2a"/>
+            <!-- Main canvas area -->
+            <rect x="78" y="32" width="180" height="130" rx="6" fill="#0a0a14"/>
+            <!-- Dashboard mockup -->
+            <rect x="86" y="40" width="164" height="28" rx="4" fill="#111121"/>
+            <text x="168" y="59" text-anchor="middle" fill="#f0efe9" font-size="10" font-family="monospace">🐶 Max's Dashboard</text>
+            <!-- Progress bars -->
+            <text x="90" y="82" fill="#7a7a8c" font-size="7" font-family="monospace">Protein</text>
+            <rect x="90" y="86" width="140" height="6" rx="3" fill="#1a1a2a"/>
+            <rect x="90" y="86" width="98" height="6" rx="3" fill="#f0b429" opacity="0.7"/>
+            <text x="90" y="104" fill="#7a7a8c" font-size="7" font-family="monospace">Carbs</text>
+            <rect x="90" y="108" width="140" height="6" rx="3" fill="#1a1a2a"/>
+            <rect x="90" y="108" width="56" height="6" rx="3" fill="#7b61ff" opacity="0.7"/>
+            <text x="90" y="126" fill="#7a7a8c" font-size="7" font-family="monospace">Vitamins</text>
+            <rect x="90" y="130" width="140" height="6" rx="3" fill="#1a1a2a"/>
+            <rect x="90" y="130" width="120" height="6" rx="3" fill="#28c840" opacity="0.6"/>
+            <!-- Vet appointment card -->
+            <rect x="86" y="146" width="76" height="26" rx="4" fill="#131320" stroke="rgba(123,97,255,0.3)" stroke-width="1"/>
+            <text x="124" y="158" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">📅 Next Vet</text>
+            <text x="124" y="168" text-anchor="middle" fill="#a598ff" font-size="7" font-family="monospace">Mar 15, 2026</text>
+            <rect x="168" y="146" width="76" height="26" rx="4" fill="#131320" stroke="rgba(240,180,41,0.3)" stroke-width="1"/>
+            <text x="206" y="158" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">🍖 Calories</text>
+            <text x="206" y="168" text-anchor="middle" fill="#f0b429" font-size="7" font-family="monospace">480 / 600</text>
+            <!-- Bottom panel -->
+            <rect x="78" y="168" width="180" height="40" rx="4" fill="#0f0f1c"/>
+            <text x="90" y="183" fill="#7a7a8c" font-size="7" font-family="monospace">90+ test cases</text>
+            <text x="90" y="196" fill="#f0b429" font-size="7" font-family="monospace">MoSCoW ✓</text>
+            <rect x="186" y="174" width="60" height="16" rx="4" fill="rgba(123,97,255,0.15)" stroke="rgba(123,97,255,0.3)" stroke-width="1"/>
+            <text x="216" y="186" text-anchor="middle" fill="#a598ff" font-size="8" font-family="monospace">Figma</text>
+            <!-- Floating annotation -->
+            <line x1="240" y1="90" x2="270" y2="60" stroke="rgba(240,180,41,0.3)" stroke-width="1" stroke-dasharray="3 2"/>
+            <rect x="250" y="40" width="42" height="18" rx="4" fill="rgba(240,180,41,0.08)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="271" y="53" text-anchor="middle" fill="#f0b429" font-size="7" font-family="monospace">UX Flow</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Project 4: illustration left, card right -->
+      <div class="proj-row rev reveal">
+        <div class="project-card-v2">
+          <div class="project-number">04</div>
+          <h3 class="project-title">Flappy Bird Clone</h3>
+          <p class="project-desc">2D game built in Unity demonstrating game mechanics and physics. Implemented collision detection, gravity physics, sprite animation, and score tracking from scratch.</p>
+          <div class="project-tech"><span class="tech-tag">Unity</span><span class="tech-tag">C#</span><span class="tech-tag">Game Dev</span></div>
+          <span class="project-meta">Unity · 2D Game</span>
+        </div>
+        <div class="proj-illus reveal-left">
+          <!-- Game SVG -->
+          <svg viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0a1628"/><stop offset="100%" stop-color="#0f2040"/></linearGradient></defs>
+            <rect width="300" height="260" fill="#111121" rx="10"/>
+            <!-- Game screen -->
+            <rect x="25" y="20" width="250" height="200" rx="8" fill="url(#sky)"/>
+            <!-- Clouds -->
+            <ellipse cx="60" cy="50" rx="22" ry="10" fill="rgba(255,255,255,0.05)"/>
+            <ellipse cx="200" cy="40" rx="28" ry="10" fill="rgba(255,255,255,0.04)"/>
+            <!-- Pipes -->
+            <rect x="160" y="20" width="30" height="80" rx="2" fill="#2d6a4f"/>
+            <rect x="156" y="94" width="38" height="10" rx="2" fill="#40916c"/>
+            <rect x="160" y="145" width="30" height="75" rx="2" fill="#2d6a4f"/>
+            <rect x="156" y="145" width="38" height="10" rx="2" fill="#40916c"/>
+
+            <rect x="240" y="20" width="30" height="60" rx="2" fill="#2d6a4f"/>
+            <rect x="236" y="74" width="38" height="10" rx="2" fill="#40916c"/>
+            <rect x="240" y="155" width="30" height="65" rx="2" fill="#2d6a4f"/>
+            <rect x="236" y="155" width="38" height="10" rx="2" fill="#40916c"/>
+
+            <!-- Bird -->
+            <ellipse cx="90" cy="115" rx="16" ry="12" fill="#f0b429"/>
+            <ellipse cx="98" cy="110" rx="6" ry="5" fill="#ffd166"/>
+            <circle cx="100" cy="108" r="3" fill="#06060d"/>
+            <circle cx="101" cy="107" r="1" fill="white"/>
+            <polygon points="106,115 116,112 106,118" fill="#e05c00"/>
+            <!-- Wing -->
+            <ellipse cx="83" cy="118" rx="8" ry="5" fill="#e8a020" transform="rotate(-15 83 118)"/>
+
+            <!-- Score UI -->
+            <rect x="30" y="26" width="60" height="24" rx="4" fill="rgba(0,0,0,0.4)"/>
+            <text x="60" y="42" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="monospace">07</text>
+            <!-- Game over badge -->
+            <rect x="88" y="28" width="84" height="20" rx="10" fill="rgba(240,180,41,0.12)" stroke="rgba(240,180,41,0.3)" stroke-width="1"/>
+            <text x="130" y="42" text-anchor="middle" fill="#f0b429" font-size="8" font-family="monospace">Unity · C# · 2D</text>
+            <!-- Ground -->
+            <rect x="25" y="205" width="250" height="15" rx="0" fill="#1a3a1a"/>
+            <rect x="25" y="202" width="250" height="5" fill="#2d6a4f"/>
+            <!-- Gravity indicator -->
+            <line x1="80" y1="82" x2="80" y2="95" stroke="rgba(240,180,41,0.5)" stroke-width="1.5" marker-end="url(#arr)"/>
+            <text x="58" y="78" fill="#f0b429" font-size="7" font-family="monospace">gravity</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ EXPERIENCE ══ -->
+  <section id="experience">
+    <p class="section-label reveal">Experience</p>
+    <h2 class="section-title reveal">Where I've <span>worked</span></h2>
+    <div class="section-divider reveal"></div>
+
+    <div class="experience-wrap">
+      <div class="experience-list">
+
+        <div class="exp-item reveal">
+          <div class="exp-line"></div>
+          <div class="exp-content">
+            <div class="exp-date">Nov 2024 – Jan 2026</div>
+            <div class="exp-role">Bell Wireless Consultant</div>
+            <div class="exp-company">Staples</div>
+            <ul class="exp-bullets">
+              <li>Ranked Top 10 in district (40+ locations across 12 cities) for 8 consecutive months through data-driven sales optimization</li>
+              <li>Awarded 'Staples Ignite Champion of the Month' for top performance in aligning business goals with customer solutions</li>
+              <li>Diagnosed and resolved network connectivity issues, device configuration errors, and software faults — reducing escalations through hands-on troubleshooting</li>
+              <li>Managed and tracked support tickets for Bell service complaints, coordinating with backend technical teams to ensure timely resolution</li>
+              <li>Leveraged CRM tools to maintain accurate customer records, identify upsell opportunities, and drive retention across an active account base</li>
+              <li>Delivered informal product training to junior team members, improving onboarding consistency and the quality of customer-facing technical communication</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-item reveal">
+          <div class="exp-line"></div>
+          <div class="exp-content">
+            <div class="exp-date">Aug 2024 – Nov 2024</div>
+            <div class="exp-role">Tech Sales Specialist</div>
+            <div class="exp-company">Staples</div>
+            <ul class="exp-bullets">
+              <li>Achieved Rank 1 in district with $100,000+ in sales over 2 months and 150+ insurance attachments</li>
+              <li>Provided technical support and customized solutions across laptops, desktops, tablets, and smart devices</li>
+              <li>Performed hardware diagnostics, OS troubleshooting, and software configuration across Windows and macOS — including data migrations and system setups</li>
+              <li>Collaborated with IT support to log recurring device issues, identify failure patterns, and escalate complex cases</li>
+              
+            </ul>
+          </div>
+        </div>
+
+        <div class="exp-item reveal">
+          <div class="exp-line"></div>
+          <div class="exp-content">
+            <div class="exp-date">Apr 2019 – Jun 2019</div>
+            <div class="exp-role">Software Testing Intern</div>
+            <div class="exp-company">EzeePay India</div>
+            <ul class="exp-bullets">
+              <li>Automated manual test scenarios using Selenium, improving testing efficiency and coverage</li>
+              <li>Gained hands-on experience in defect tracking, reporting, and validating fixes throughout QA lifecycle</li>
+              <li>Collaborated with developers to reproduce and document edge-case failures, reducing mean time to resolution across multiple sprint cycles</li>
+              <li>Contributed to internal QA documentation and test plan templates that were adopted by the broader engineering team</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky side illustration -->
+      <div class="exp-sticky-illus reveal-right">
+        <!-- Bell Wireless / CRM visual -->
+        <div class="exp-illus-block">
+          <svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="bell-g" cx="50%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#7b61ff" stop-opacity="0.10"/>
+                <stop offset="100%" stop-color="#7b61ff" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="260" height="180" rx="12" fill="#0f0f1c" stroke="#1a1a2a" stroke-width="1"/>
+            <rect width="260" height="180" rx="12" fill="url(#bell-g)"/>
+            <text x="130" y="20" text-anchor="middle" fill="#7a7a8c" font-size="9" font-family="monospace" letter-spacing="2">WIRELESS · CRM</text>
+            <path d="M72,62 Q101,38 130,34 Q159,38 188,62" fill="none" stroke="rgba(240,180,41,0.10)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M84,71 Q107,53 130,49 Q153,53 176,71" fill="none" stroke="rgba(240,180,41,0.28)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M97,80 Q113,68 130,64 Q147,68 163,80" fill="none" stroke="rgba(240,180,41,0.65)" stroke-width="2.5" stroke-linecap="round">
+              <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+            </path>
+            <rect x="118" y="82" width="24" height="36" rx="5" fill="#131320" stroke="rgba(240,180,41,0.35)" stroke-width="1"/>
+            <rect x="121" y="86" width="18" height="20" rx="2" fill="#0a0a14"/>
+            <rect x="121" y="86" width="18" height="20" rx="2" fill="rgba(123,97,255,0.15)">
+              <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3s" repeatCount="indefinite"/>
+            </rect>
+            <circle cx="130" cy="113" r="2" fill="rgba(240,180,41,0.45)"/>
+            <rect x="12" y="130" width="68" height="30" rx="7" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="46" y="143" text-anchor="middle" fill="#f0b429" font-size="10" font-weight="bold" font-family="monospace">Top 10</text>
+            <text x="46" y="154" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">District</text>
+            <rect x="96" y="130" width="68" height="30" rx="7" fill="rgba(123,97,255,0.07)" stroke="rgba(123,97,255,0.2)" stroke-width="1"/>
+            <text x="130" y="143" text-anchor="middle" fill="#a598ff" font-size="10" font-weight="bold" font-family="monospace">8 Months</text>
+            <text x="130" y="154" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Ranked #1</text>
+            <rect x="180" y="130" width="68" height="30" rx="7" fill="rgba(40,200,64,0.06)" stroke="rgba(40,200,64,0.2)" stroke-width="1"/>
+            <text x="214" y="143" text-anchor="middle" fill="#28c840" font-size="10" font-weight="bold" font-family="monospace">CRM</text>
+            <text x="214" y="154" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Managed</text>
+            <rect x="12" y="168" width="236" height="5" rx="2" fill="#1a1a2a"/>
+            <rect x="12" y="168" width="0" height="5" rx="2" fill="rgba(240,180,41,0.55)">
+              <animate attributeName="width" from="0" to="198" dur="2s" fill="freeze" begin="0.3s"/>
+            </rect>
+          </svg>
+          <p class="exp-illus-caption">Bell Wireless · CRM</p>
+        </div>
+        <!-- Sales performance visual -->
+        <div class="exp-illus-block">
+          <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+            <defs><radialGradient id="eg1" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#f0b429" stop-opacity="0.08"/><stop offset="100%" stop-color="#f0b429" stop-opacity="0"/></radialGradient></defs>
+            <rect width="260" height="220" rx="12" fill="#0f0f1c" stroke="#1a1a2a" stroke-width="1"/>
+            <rect width="260" height="220" rx="12" fill="url(#eg1)"/>
+            <text x="130" y="28" text-anchor="middle" fill="#7a7a8c" font-size="9" font-family="monospace" letter-spacing="2">PERFORMANCE</text>
+            <!-- Rank badge -->
+            <rect x="70" y="40" width="120" height="44" rx="10" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="130" y="60" text-anchor="middle" fill="#f0b429" font-size="22" font-weight="bold" font-family="monospace">#1</text>
+            <text x="130" y="76" text-anchor="middle" fill="#7a7a8c" font-size="8" font-family="monospace">District Rank</text>
+            <!-- Mini bar chart: 8 months -->
+            <text x="20" y="102" fill="#7a7a8c" font-size="8" font-family="monospace">Monthly Rank (8 months)</text>
+            <rect x="20" y="110" width="16" height="48" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="40" y="118" width="16" height="40" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="60" y="108" width="16" height="50" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="80" y="120" width="16" height="38" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="100" y="110" width="16" height="48" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="120" y="106" width="16" height="52" rx="2" fill="rgba(240,180,41,0.9)"/>
+            <rect x="140" y="112" width="16" height="46" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <rect x="160" y="108" width="16" height="50" rx="2" fill="rgba(240,180,41,0.7)"/>
+            <text x="20" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Aug</text>
+            <text x="40" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Sep</text>
+            <text x="60" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Oct</text>
+            <text x="80" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Nov</text>
+            <text x="100" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Dec</text>
+            <text x="120" y="170" fill="#f0b429" font-size="7" font-family="monospace">Jan</text>
+            <text x="140" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Feb</text>
+            <text x="160" y="170" fill="#3a3a50" font-size="7" font-family="monospace">Mar</text>
+            <!-- Revenue stat -->
+            <rect x="20" y="180" width="100" height="28" rx="6" fill="rgba(123,97,255,0.08)" stroke="rgba(123,97,255,0.2)" stroke-width="1"/>
+            <text x="70" y="192" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Revenue</text>
+            <text x="70" y="203" text-anchor="middle" fill="#a598ff" font-size="9" font-weight="bold" font-family="monospace">$100K+</text>
+            <rect x="134" y="180" width="106" height="28" rx="6" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="187" y="192" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Locations</text>
+            <text x="187" y="203" text-anchor="middle" fill="#f0b429" font-size="9" font-weight="bold" font-family="monospace">40+ Sites</text>
+          </svg>
+          <p class="exp-illus-caption">Sales Performance</p>
+        </div>
+        <!-- QA/Dev visual -->
+        <div class="exp-illus-block">
+          <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="160" rx="12" fill="#0f0f1c" stroke="#1a1a2a" stroke-width="1"/>
+            <text x="130" y="22" text-anchor="middle" fill="#7a7a8c" font-size="9" font-family="monospace" letter-spacing="2">QA PIPELINE</text>
+            <!-- Pipeline flow -->
+            <rect x="14" y="36" width="44" height="28" rx="6" fill="rgba(123,97,255,0.08)" stroke="rgba(123,97,255,0.2)" stroke-width="1"/>
+            <text x="36" y="52" text-anchor="middle" fill="#a598ff" font-size="8" font-family="monospace">Write</text>
+            <text x="36" y="62" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Test</text>
+            <line x1="58" y1="50" x2="72" y2="50" stroke="rgba(240,180,41,0.3)" stroke-width="1.5"/>
+            <polygon points="72,46 80,50 72,54" fill="rgba(240,180,41,0.5)"/>
+            <rect x="80" y="36" width="44" height="28" rx="6" fill="rgba(240,180,41,0.06)" stroke="rgba(240,180,41,0.2)" stroke-width="1"/>
+            <text x="102" y="52" text-anchor="middle" fill="#f0b429" font-size="8" font-family="monospace">Selenium</text>
+            <text x="102" y="62" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Auto</text>
+            <line x1="124" y1="50" x2="138" y2="50" stroke="rgba(240,180,41,0.3)" stroke-width="1.5"/>
+            <polygon points="138,46 146,50 138,54" fill="rgba(240,180,41,0.5)"/>
+            <rect x="146" y="36" width="44" height="28" rx="6" fill="rgba(123,97,255,0.08)" stroke="rgba(123,97,255,0.2)" stroke-width="1"/>
+            <text x="168" y="52" text-anchor="middle" fill="#a598ff" font-size="8" font-family="monospace">Track</text>
+            <text x="168" y="62" text-anchor="middle" fill="#7a7a8c" font-size="7" font-family="monospace">Defect</text>
+            <line x1="190" y1="50" x2="204" y2="50" stroke="rgba(240,180,41,0.3)" stroke-width="1.5"/>
+            <polygon points="204,46 212,50 204,54" fill="rgba(240,180,41,0.5)"/>
+            <rect x="212" y="36" width="34" height="28" rx="6" fill="rgba(40,200,64,0.08)" stroke="rgba(40,200,64,0.2)" stroke-width="1"/>
+            <text x="229" y="52" text-anchor="middle" fill="#28c840" font-size="8" font-family="monospace">Fix ✓</text>
+            <!-- EzeePay badge -->
+            <rect x="80" y="88" width="100" height="30" rx="8" fill="rgba(240,180,41,0.05)" stroke="rgba(240,180,41,0.15)" stroke-width="1"/>
+            <text x="130" y="104" text-anchor="middle" fill="#7a7a8c" font-size="8" font-family="monospace">EzeePay India</text>
+            <text x="130" y="115" text-anchor="middle" fill="#f0b429" font-size="8" font-family="monospace">Intern · 2019</text>
+            <!-- Coverage stat -->
+            <rect x="14" y="130" width="100" height="18" rx="4" fill="#1a1a2a"/>
+            <rect x="14" y="130" width="78" height="18" rx="4" fill="rgba(123,97,255,0.4)"/>
+            <text x="19" y="143" fill="white" font-size="8" font-family="monospace">Coverage ↑</text>
+            <text x="148" y="143" fill="#7a7a8c" font-size="8" font-family="monospace">Efficiency ↑</text>
+          </svg>
+          <p class="exp-illus-caption">QA Automation</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CONTACT ══ -->
+  <section id="contact">
+    <div class="contact-inner reveal">
+      <p class="section-label">Contact</p>
+      <h2 class="section-title">Let's <span>work together</span></h2>
+      <div class="section-divider" style="margin: 0 auto 2rem;"></div>
+      <p class="contact-sub">
+        I'm always grateful for new conversations — whether it's a role that might be a good fit,
+        advice from someone further along the path, or just a chat about tech.
+        My inbox is always open.
+      </p>
+      <div class="contact-links">
+        <a href="/cdn-cgi/l/email-protection#b4d5c6dec1da8485c6d5c2d1d1dad0c6d5daf4d3d9d5ddd89ad7dbd9" class="btn-gold">📧 <span class="__cf_email__" data-cfemail="62031008170c525310031407070c0610030c22050f030b0e4c010d0f">[email&#160;protected]</span></a>
+        <a href="https://www.linkedin.com/in/arjun-bharadwaj-raveendran-689a61276" class="btn-outline" target="_blank">💼 LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Arjun Bharadwaj Raveendran</span>
+    <span>Built with HTML · CSS · JS · Deployed on <a href="https://pages.github.com" target="_blank">GitHub Pages</a></span>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const cursorRing = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+      cursorRing.style.left = ringX + 'px'; cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button, .skill-tag, .cert-card, .project-card-v2, .skill-category').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.style.width = '18px'; cursor.style.height = '18px'; cursorRing.style.width = '54px'; cursorRing.style.height = '54px'; });
+      el.addEventListener('mouseleave', () => { cursor.style.width = '10px'; cursor.style.height = '10px'; cursorRing.style.width = '36px'; cursorRing.style.height = '36px'; });
+    });
+
+    // PROGRESS
+    window.addEventListener('scroll', () => { const s = window.scrollY, d = document.body.scrollHeight - window.innerHeight; document.getElementById('progress-bar').style.width = (s / d * 100) + '%'; });
+
+    // NAV
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 40));
+    const sections = document.querySelectorAll('section[id]'), navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 220) current = s.id; });
+      navLinks.forEach(l => { l.classList.remove('active'); if (l.getAttribute('href') === '#' + current) l.classList.add('active'); });
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); }); });
+
+    // REVEAL
+    const allReveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => { if (entry.isIntersecting) { setTimeout(() => entry.target.classList.add('visible'), i * 70); revealObs.unobserve(entry.target); } });
+    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+    allReveals.forEach(el => revealObs.observe(el));
+
+    // COUNTERS
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const obs = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          const target = +el.dataset.count, duration = 1400, step = duration / target;
+          let cur = 0;
+          const t = setInterval(() => { cur++; el.textContent = cur; if (cur >= target) clearInterval(t); }, step);
+          obs.unobserve(el);
+        }
+      }, { threshold: 0.5 });
+      obs.observe(el);
+    });
+
+    // PARTICLE CANVAS
+    const canvas = document.getElementById('particleCanvas'), ctx = canvas.getContext('2d');
+    let particles = [], w, h;
+    function resize() { w = canvas.width = canvas.offsetWidth; h = canvas.height = canvas.offsetHeight; }
+    resize(); window.addEventListener('resize', resize);
+    class Particle {
+      constructor() { this.reset(); }
+      reset() { this.x = Math.random() * w; this.y = Math.random() * h; this.size = Math.random() * 1.5 + 0.3; this.speedX = (Math.random() - 0.5) * 0.25; this.speedY = (Math.random() - 0.5) * 0.25; this.opacity = Math.random() * 0.45 + 0.05; this.color = Math.random() > 0.65 ? '240,180,41' : '123,97,255'; }
+      update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset(); }
+      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(${this.color},${this.opacity})`; ctx.fill(); }
+    }
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 90) { ctx.beginPath(); ctx.strokeStyle = `rgba(240,180,41,${0.04 * (1 - dist/90)})`; ctx.lineWidth = 0.5; ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke(); }
+      }
+    }
+    function animateParticles() { ctx.clearRect(0, 0, w, h); particles.forEach(p => { p.update(); p.draw(); }); drawConnections(); requestAnimationFrame(animateParticles); }
+    animateParticles();
+
+    // TILT on project cards
+    document.querySelectorAll('.project-card-v2').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect(), x = (e.clientX - rect.left) / rect.width - 0.5, y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+  </script>
+</body>
+</html>
